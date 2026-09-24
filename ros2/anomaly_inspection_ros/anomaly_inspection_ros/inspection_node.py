@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import traceback
 from pathlib import Path
 from typing import Optional
 
@@ -49,9 +50,6 @@ class InspectionNode(LifecycleNode):
     # -- Lifecycle callbacks --------------------------------------------------
 
     def on_configure(self, state: LifecycleState) -> TransitionCallbackReturn:
-        # Lazy import: onnxruntime no se carga hasta que el nodo se configura de verdad.
-        from anomaly_inspection.runtime import OnnxInspector
-
         model_path = Path(self.get_parameter("model_path").value)
         device = self.get_parameter("device").value
         threshold = self.get_parameter("threshold").value
@@ -62,11 +60,14 @@ class InspectionNode(LifecycleNode):
             return TransitionCallbackReturn.FAILURE
 
         try:
+            # Lazy import inside the try: import failures must be logged, not swallowed by rclpy.
+            from anomaly_inspection.runtime import OnnxInspector
+
             self._inspector = OnnxInspector(model_path, device=device, threshold=threshold)
             self._inspector.warmup(warmup)
         except Exception:
-            self.get_logger().error("Failed to initialize OnnxInspector", exc_info=True)
-            return TransitionCallbackReturn.ERROR
+            self.get_logger().error(f"Failed to initialize OnnxInspector:\n{traceback.format_exc()}")
+            return TransitionCallbackReturn.FAILURE
 
         self.get_logger().info(
             f"Loaded '{model_path.name}' on {self._inspector.providers[0]} "
@@ -162,7 +163,7 @@ def main(args: Optional[list[str]] = None) -> None:
         pass
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        rclpy.try_shutdown()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,11 @@
+.venv/
+.git/
+models/
+results/
+datasets/
+__pycache__/
+*.pyc
+.pytest_cache/
+build/
+install/
+log/
