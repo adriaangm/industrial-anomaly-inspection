@@ -1,6 +1,6 @@
 [project]
 name = "industrial-anomaly-inspection"
-version = "0.2.0"
+version = "0.3.0"
 description = "Unsupervised visual anomaly detection for industrial inspection, deployable as a ROS 2 node"
 requires-python = ">=3.12,<3.13"
 dependencies = [
@@ -9,10 +9,15 @@ dependencies = [
     "torchvision>=0.22",
     "pandas>=2.2",
     "pyyaml>=6.0",
+    "onnx>=1.17",
+    "onnxscript>=0.3",
+    "onnxruntime-gpu[cuda,cudnn]>=1.22",
 ]
 
 [project.scripts]
 aii-benchmark = "anomaly_inspection.benchmark:main"
+aii-export = "anomaly_inspection.export:main"
+aii-evaluate-onnx = "anomaly_inspection.runtime.evaluate:main"
 
 [build-system]
 requires = ["hatchling"]
