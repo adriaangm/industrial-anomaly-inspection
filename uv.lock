@@ -474,12 +474,19 @@ wheels = [
 
 [[package]]
 name = "industrial-anomaly-inspection"
-version = "0.3.0"
+version = "0.4.0"
 source = { editable = "." }
 dependencies = [
-    { name = "anomalib" },
+    { name = "numpy" },
     { name = "onnx" },
     { name = "onnxruntime-gpu", extra = ["cuda", "cudnn"] },
+    { name = "opencv-python-headless" },
+    { name = "scikit-learn" },
+]
+
+[package.optional-dependencies]
+train = [
+    { name = "anomalib" },
     { name = "onnxscript" },
     { name = "pandas" },
     { name = "pyyaml" },
@@ -489,15 +496,19 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "anomalib", specifier = ">=2.6,<2.7" },
+    { name = "anomalib", marker = "extra == 'train'", specifier = ">=2.6,<2.7" },
+    { name = "numpy", specifier = ">=1.26" },
     { name = "onnx", specifier = ">=1.17" },
     { name = "onnxruntime-gpu", extras = ["cuda", "cudnn"], specifier = ">=1.22" },
-    { name = "onnxscript", specifier = ">=0.3" },
-    { name = "pandas", specifier = ">=2.2" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "torch", specifier = ">=2.7", index = "https://download.pytorch.org/whl/cu128" },
-    { name = "torchvision", specifier = ">=0.22", index = "https://download.pytorch.org/whl/cu128" },
+    { name = "onnxscript", marker = "extra == 'train'", specifier = ">=0.3" },
+    { name = "opencv-python-headless", specifier = ">=4.10" },
+    { name = "pandas", marker = "extra == 'train'", specifier = ">=2.2" },
+    { name = "pyyaml", marker = "extra == 'train'", specifier = ">=6.0" },
+    { name = "scikit-learn", specifier = ">=1.5" },
+    { name = "torch", marker = "extra == 'train'", specifier = ">=2.7", index = "https://download.pytorch.org/whl/cu128" },
+    { name = "torchvision", marker = "extra == 'train'", specifier = ">=0.22", index = "https://download.pytorch.org/whl/cu128" },
 ]
+provides-extras = ["train"]
 
 [[package]]
 name = "jinja2"
