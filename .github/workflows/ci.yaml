@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      # CPU-only PyTorch: el runner no tiene GPU y la wheel CUDA pesa ~3 GB, innecesaria para smoke tests.
+      - name: Sync dependencies (CPU-only torch)
+        run: |
+          uv sync --extra train --no-install-package torch --no-install-package torchvision
+          uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          uv add --dev pytest
+
+      - name: Run unit tests
+        run: uv run pytest tests/ -v
+
+      - name: Check package imports cleanly
+        run: uv run python -c "from anomaly_inspection.runtime import OnnxInspector; print('import OK')"
