@@ -1,13 +1,25 @@
 [project]
 name = "industrial-anomaly-inspection"
-version = "0.1.0"
+version = "0.2.0"
 description = "Unsupervised visual anomaly detection for industrial inspection, deployable as a ROS 2 node"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "anomalib>=2.6,<2.7",
     "torch>=2.7",
     "torchvision>=0.22",
+    "pandas>=2.2",
+    "pyyaml>=6.0",
 ]
+
+[project.scripts]
+aii-benchmark = "anomaly_inspection.benchmark:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/anomaly_inspection"]
 
 [tool.uv.sources]
 torch = [{ index = "pytorch-cu128" }]

@@ -466,10 +466,12 @@ wheels = [
 
 [[package]]
 name = "industrial-anomaly-inspection"
-version = "0.1.0"
-source = { virtual = "." }
+version = "0.2.0"
+source = { editable = "." }
 dependencies = [
     { name = "anomalib" },
+    { name = "pandas" },
+    { name = "pyyaml" },
     { name = "torch" },
     { name = "torchvision" },
 ]
@@ -477,6 +479,8 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "anomalib", specifier = ">=2.6,<2.7" },
+    { name = "pandas", specifier = ">=2.2" },
+    { name = "pyyaml", specifier = ">=6.0" },
     { name = "torch", specifier = ">=2.7", index = "https://download.pytorch.org/whl/cu128" },
     { name = "torchvision", specifier = ">=0.22", index = "https://download.pytorch.org/whl/cu128" },
 ]

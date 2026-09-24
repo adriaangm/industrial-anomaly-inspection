@@ -1,0 +1,30 @@
+dataset_root: ~/datasets/MVTecAD
+output_dir: results/benchmark
+train_batch_size: 32
+eval_batch_size: 32
+num_workers: 4
+seed: 42
+
+# Categories with an industrial-part flavour (the Project 3 cell will reuse one of them)
+categories: [bottle, metal_nut, screw, transistor]
+
+models:
+  - name: patchcore
+    params:
+      backbone: wide_resnet50_2
+      layers: [layer2, layer3]
+      coreset_sampling_ratio: 0.1
+
+  - name: padim
+    params:
+      backbone: resnet18
+      layers: [layer1, layer2, layer3]
+
+  # EfficientAD requires train_batch_size=1 and downloads Imagenette for its penalty loss.
+  # The paper uses 70k steps; 10k is a compromise for a laptop GPU.
+  - name: efficient_ad
+    train_batch_size: 1
+    params:
+      imagenet_dir: ~/datasets/imagenette
+    trainer:
+      max_steps: 10000
